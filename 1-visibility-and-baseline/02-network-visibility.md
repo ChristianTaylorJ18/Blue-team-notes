@@ -1,24 +1,40 @@
 # 02 — Network Visibility
 
-If traffic can move without being observed, an attacker's lateral movement is invisible. Map how you see packets and flows across every segment.
+If traffic can move without being observed, an attacker's lateral movement is invisible. Map how you see packets and flows across every segment, and treat the blind spots as explicitly as the covered ones.
 
-## Vantage points
-- **North-south** (perimeter): firewall logs, proxy logs, IDS at the egress. Catches C2, exfil, inbound scans.
-- **East-west** (internal): SPAN/TAP at core switches, NetFlow/IPFIX from routers. Catches lateral movement — the part most orgs are blind to.
-- **Host-level**: Sysmon Event ID 3 (network connection) on endpoints fills gaps where you have no tap.
+## Vantage points (you need all three)
+- **North-south** (perimeter): firewall, proxy, egress IDS. Catches C2, exfil, inbound scanning. Most orgs have this.
+- **East-west** (internal): SPAN/TAP at core/distribution switches, NetFlow/IPFIX from L3 devices. Catches lateral movement — the part most orgs are blind to and the part that matters most after initial access.
+- **Host-level**: Sysmon Event ID 3 (network connection) and EDR flow telemetry fill gaps where you have no tap (cloud, remote, micro-segmented).
 
-## NetFlow as a cheap baseline
-Flow data (who talked to whom, how much, when) is tiny compared to full PCAP and answers most hunting questions.
+## Data types, cheapest to richest
+| Type | Cost | Answers |
+|------|------|---------|
+| Flow (NetFlow/IPFIX/Zeek conn.log) | low | who↔who, how much, when, how often |
+| Protocol metadata (Zeek logs, JA3/JA3S, SNI, DNS, HTTP, x509) | medium | what service, what TLS fingerprint, what domain/cert |
+| Full PCAP | high | exact payload — keep targeted/rolling, not everywhere |
+
+Flow is the workhorse: tiny to store, answers most hunting questions, and reveals beaconing periodicity even when payloads are encrypted.
 
 ```bash
-# With nfdump: top talkers to a suspect host in the last hour
+# Top talkers to a suspect host in the last hour (nfdump)
 nfdump -R /var/flows -t "$(date -d '1 hour ago' +%Y/%m/%d.%H:%M:%S)" \
   "dst ip <suspect-ip>" -s srcip/bytes -n 20
+# Long-lived connections (possible tunnels/C2) — Zeek conn.log, duration desc
+zeek-cut id.orig_h id.resp_h id.resp_p duration orig_bytes resp_bytes < conn.log \
+  | sort -k4 -nr | head
 ```
 
-## Segmentation map
-- Document which VLANs/subnets *should* be able to reach which. The map is a detection rule: workstation subnet talking SMB to another workstation is abnormal in most designs.
-- Known-good flows become allowlists; everything else is a hunting lead.
+## Segmentation map = detection content
+Document which VLANs/subnets *should* reach which. The map becomes rules:
+- Workstation→workstation SMB/RDP/WinRM is abnormal in most designs — alert on it.
+- Server segment reaching the internet on new ports/destinations is suspect.
+- Anything reaching tier-0 (DCs, PKI, backup) from outside the admin network is high-signal.
+Known-good flows become allowlists; everything else is a hunting lead.
 
 ## Encryption reality
-- You won't decrypt most traffic. Lean on metadata: JA3/JA3S TLS fingerprints, SNI, cert details, flow size/timing. Beaconing shows up in flow periodicity even when payload is opaque.
+You won't decrypt most traffic, and shouldn't need to. Lean on metadata: JA3/JA3S TLS fingerprints (malware families reuse them), SNI/cert anomalies (self-signed, brand-new domains, mismatched CN), and flow shape. Beaconing shows up as periodicity + uniform size in flow data regardless of payload. Where you *do* break TLS (perimeter decrypt), feed it to the IDS and the proxy logs.
+
+## Close the blind spots deliberately
+- VPN/remote users, cloud VPCs, container overlays, and OT/IoT segments are common gaps — list each and state how (or whether) you see it.
+- A documented blind spot is a risk decision; an undocumented one is a surprise during an incident.
