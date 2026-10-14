@@ -9,5 +9,6 @@ The mirror of post-exploitation: once an attacker has a foothold, this is how yo
 4. [Persistence Hunting](./04-persistence-hunting.md) — finding the mechanisms that survive a reboot.
 5. [Containment & Eradication](./05-containment-eradication.md) — isolate, scope, remove, verify.
 6. [Forensic Preservation](./06-forensic-preservation.md) — order of volatility, imaging, chain of custody.
+7. [Linux Live Forensics & Artefact Hunting](./07-linux-live-forensics.md) — filesystem artefact hunt: find patterns, metadata, backdoor accounts, SUID, rootkits.
 
 > **Scope before you swing.** Isolating one box while missing the other five hands the attacker a warning and keeps them in. Understand the blast radius first.

@@ -51,6 +51,7 @@ Each stage folder holds a set of `.md` files covering one focused topic; section
 - [04 - Persistence Hunting](./4-incident-response/04-persistence-hunting.md)
 - [05 - Containment & Eradication](./4-incident-response/05-containment-eradication.md)
 - [06 - Forensic Preservation](./4-incident-response/06-forensic-preservation.md)
+- [07 - Linux Live Forensics & Artefact Hunting](./4-incident-response/07-linux-live-forensics.md)
 
 ### 5. Threat Hunting & Lateral-Movement Defense
 - [01 - AD Monitoring Overview](./5-threat-hunting/01-ad-monitoring-overview.md)
