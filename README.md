@@ -8,6 +8,7 @@ My blue-team notes, as I actually work through the material. Defensive counterpa
 |-------|--------|----------------|
 | [Linux File System Analysis](./linux-file-system-analysis/) | TryHackMe room | Live Linux forensics: find an attacker's artefacts, read timestamps, hunt backdoor accounts/persistence, check binary integrity, sweep for rootkits |
 | [Linux Process Analysis](./linux-process-analysis/) | TryHackMe room | Process & persistence analysis on Linux: ps/lsof/pstree/top, cronjobs, services, autostart scripts, application artefacts |
+| [Investigating Windows](./investigating-windows/) | TryHackMe room | Windows IR: scheduled-task + registry persistence, LOKI IOC scans, WMI event-subscription backdoors, Sysinternals process analysis, YARA rules |
 | [Threat Hunting: Foothold (Elastic)](./threat-hunting-foothold/) | TryHackMe room | Hunting initial compromise in the Elastic Stack (Kibana / KQL) across the ATT&CK tactics: initial access, execution, defence impairment, persistence, C2 |
 
 *More topics get added here as I complete them.*
