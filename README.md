@@ -11,6 +11,7 @@ My blue-team notes, as I actually work through the material. Defensive counterpa
 | [Investigating Windows 2.0](./investigating-windows/) | TryHackMe room | Windows IR: scheduled-task + registry persistence, LOKI IOC scans, WMI event-subscription backdoors, Sysinternals process analysis, YARA rules |
 | [Investigating Windows 3.x](./investigating-windows-3/) | TryHackMe room | Windows IR via event logs: Sysmon run-key persistence, decoding payloads, PrintDemon spooler abuse, Empire C2 profile, process injection |
 | [Threat Hunting: Foothold (Elastic)](./threat-hunting-foothold/) | TryHackMe room | Hunting initial compromise in the Elastic Stack (Kibana / KQL) across the ATT&CK tactics: initial access, execution, defence impairment, persistence, C2 |
+| [Adversarial Tradecraft — Blue Team](./adversarial-tradecraft-blue-team/) | CIS4930 class | Defensive content from my Cyber Adversarial Tradecraft course: preparing for battle / runbooks, logging & SIEM, detection tools (EDR/IDS), analysis tools |
 
 *More topics get added here as I complete them.*
 
